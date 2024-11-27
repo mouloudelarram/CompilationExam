@@ -1,0 +1,5 @@
+CREATE TABLE peron (
+    id NUMBER(32) NOT NULL, nom VARCHAR2(25), prenom VARCHAR2(25), age NUMBER(2), dateN DATE,
+    CONSTRAINT idConst PRIMARY KEY (id),
+    CONSTRAINT ageFrk FOREIGN KEY (age) REFERENCES ages (age)
+);

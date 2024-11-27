@@ -1,0 +1,50 @@
+%{
+    #include <stdio.h>
+    #include <stdlib.h>
+    int yylex(void);
+    int yyparse(void);
+    void yyerror(char *);
+%}
+
+%token SEMICOLON CONSTRAINT INTEGER COMMA OPEN_PAREN CLOSE_PAREN IDENTIFIER CREATE_TABLE PRIMARY_KEY REFERENCES FOREIGN_KEY NOT_NULL DATE NUMBER CHAR VARCHAR VARCHAR2
+%left COMMA OPEN_PAREN CLOSE_PAREN IDENTIFIER CREATE_TABLE PRIMARY_KEY REFERENCES FOREIGN_KEY NOT_NULL DATE NUMBER CHAR VARCHAR VARCHAR2
+%start prog
+
+%%
+prog: CREATE_TABLE IDENTIFIER OPEN_PAREN stm CLOSE_PAREN SEMICOLON
+;
+
+stm: colonne_typedata_list prm
+    | colonne_typedata_list prm frk
+    ;
+
+colonne_typedata_list: IDENTIFIER datatype COMMA
+    | IDENTIFIER datatype COMMA colonne_typedata_list
+;
+
+datatype: NUMBER OPEN_PAREN INTEGER CLOSE_PAREN NOT_NULL
+    | NUMBER OPEN_PAREN INTEGER CLOSE_PAREN
+    | DATE NOT_NULL
+    | DATE
+    | VARCHAR2 OPEN_PAREN INTEGER CLOSE_PAREN NOT_NULL
+    | VARCHAR2 OPEN_PAREN INTEGER CLOSE_PAREN
+;
+
+prm: CONSTRAINT IDENTIFIER PRIMARY_KEY OPEN_PAREN colonne_list CLOSE_PAREN COMMA
+    | CONSTRAINT IDENTIFIER PRIMARY_KEY OPEN_PAREN colonne_list CLOSE_PAREN prm
+;
+
+colonne_list: IDENTIFIER 
+    | IDENTIFIER COMMA colonne_list
+;
+
+frk: CONSTRAINT IDENTIFIER FOREIGN_KEY OPEN_PAREN colonne_list CLOSE_PAREN REFERENCES IDENTIFIER OPEN_PAREN colonne_list CLOSE_PAREN
+;
+
+%%
+
+void yyerror(char *s)
+{
+    printf("%s\n", s);
+    exit(1);
+}

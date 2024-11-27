@@ -1,0 +1,11 @@
+int x;
+x=10;
+
+switch (x) {
+    case 1: x = 0; break;
+    case 2<0: x = 0; break;
+    case 3<0: x = 0; break;
+    case 4<0: x = 0; break;
+
+    default : x = 1; break;
+}
